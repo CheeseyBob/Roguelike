@@ -22,6 +22,7 @@ class Cat extends Actor implements LeftClickAction {
 	public boolean leftClick() {
 		System.out.println("Cat.leftClick()");
 		bgCol = Color.RED;
+		scene.paint();
 		return true;
 	}
 }

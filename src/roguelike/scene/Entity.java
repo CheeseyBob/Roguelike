@@ -6,8 +6,8 @@ import roguelike.LocatableTile;
 
 
 public class Entity extends LocatableTile {
-	EntityMap map;
-	Scene scene;
+	protected EntityMap map;
+	protected Scene scene;
 	int drawLayer;
 	
 	public Entity(char character, Color bgCol, Color fgCol, int drawLayer) {

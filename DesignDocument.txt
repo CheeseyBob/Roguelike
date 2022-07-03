@@ -6,15 +6,16 @@ The core engine and the game itself will be developed in a compartmentalised way
 
 ~~~ To-Do (Engine) ~~~
 
-> Mouse controls
--> Add onHover to entities and UI elements
-
 > UI layer
 -> Add z-depth to UI drawing.
 
 > Multi-tile entities and UI components using child objects.
 
 > Movement-blocking terrain.
+
+> Activate controls in priority order.
+
+> Use graphics buffer strategy. 
 
 
 ~~~ To-Do (Game) ~~~
@@ -25,7 +26,6 @@ The core engine and the game itself will be developed in a compartmentalised way
 
 > OnHover actions
 -> Show furigana somewhere in the UI when hovering over a kanji entity.
--> Have terrain tiles display kanji only when hovered (e.g. '.' -> '草' for grass).
 
 > Consider the actual game mechanics
 -> Exploration

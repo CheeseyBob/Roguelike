@@ -1,10 +1,12 @@
 package roguelike.scene;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.util.*;
 
 import roguelike.controls.*;
 import roguelike.display.Display;
+import roguelike.ui.HoverAction;
 import roguelike.ui.LeftClickAction;
 import roguelike.ui.RightClickAction;
 
@@ -20,10 +22,12 @@ public class Scene {
 	private final EntityMap entityMap = new EntityMap();
 	private final Set<InterfaceComponent> interfaceComponents = new HashSet<InterfaceComponent>();
 	private final Set<Stepable> stepables = new HashSet<Stepable>();
+	private final Set<HoverAction> hoveringSet = new HashSet<HoverAction>();
 	
 	public Scene() {
 		addControl(MouseControl.LEFT_BUTTON, this::clickLeftMouse);
 		addControl(MouseControl.RIGHT_BUTTON, this::clickRightMouse);
+		addControl(this::hover);
 	}
 	
 	public void addControl(KeyControl control) {
@@ -34,12 +38,34 @@ public class Scene {
 		controlManager.add(control);
 	}
 	
+	public void addControl(HoverControl control) {
+		controlManager.add(control);
+	}
+	
+	/**
+	 * Adds a KeyControl which triggers the given action.
+	 * @param character The character which is to trigger the control.
+	 * @param action A method to be run when the control is triggered.
+	 */
 	public void addControl(char character, KeyControlFunction action) {
 		controlManager.add(new FunctionalKeyControl(character, action));
 	}
 	
+	/**
+	 * Adds a MouseControl which triggers the given action.
+	 * @param button Code for the mouse button which is to trigger the control.
+	 * @param action A method to be run when the control is triggered.
+	 */
 	public void addControl(int button, MouseControlFunction action) {
 		controlManager.add(new FunctionalMouseControl(button, action));
+	}
+	
+	/**
+	 * Adds a HoverControl which triggers the given action.
+	 * @param action A method to be run when the control is triggered.
+	 */
+	public void addControl(MouseControlFunction action) {
+		controlManager.add(new FunctionalHoverControl(action));
 	}
 	
 	private boolean clickLeftMouse(int x, int y) {
@@ -84,6 +110,32 @@ public class Scene {
 	
 	public Display getDisplay() {
 		return connectedDisplay.get();
+	}
+	
+	private boolean hover(HoverAction hoverable) {
+		hoveringSet.add(hoverable);
+		return hoverable.hover();
+	}
+	
+	private boolean hover(int x, int y) {
+		getDisplay().setHoverHighlight(x, y, Color.YELLOW);
+		getDisplay().repaint();
+		
+		for(HoverAction hoverable : hoveringSet)
+			hoverable.unhover();
+		hoveringSet.clear();
+		
+		for(InterfaceComponent component : interfaceComponents)
+			if(component instanceof HoverAction && component.isAt(x, y))
+				if(hover((HoverAction) component))
+					return true;
+		
+		for(Entity entity : entityMap.get(mapCoordinatesOf(x, y)))
+			if(entity instanceof HoverAction)
+				if(hover((HoverAction) entity))
+					return true;
+
+		return false;
 	}
 	
 	public Point mapCoordinatesOf(int displayX, int displayY) {

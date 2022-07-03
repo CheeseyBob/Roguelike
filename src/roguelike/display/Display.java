@@ -11,23 +11,28 @@ import java.awt.Insets;
 import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 
 public class Display extends Frame {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Tile[][] grid;
+	private boolean[][] needsRepaint;
+	private Set<Highlight> highlightSet = new HashSet<Highlight>();
+	private Highlight hoverHighlight = new Highlight(0, 0, Color.DARK_GRAY);
 	private int tileSize;
 	private int tileHalfSize;
 	private Color bgCol = Color.BLACK;
 	private Font font;
-	private boolean drawDebugWireframe = false;
 
 	public Display(String title, int width, int height, int tileSize, Font font) {
 		this.tileSize = tileSize;
 		this.tileHalfSize = tileSize/2;
 		this.font = font;
 		this.grid = new Tile[width][height];
+		this.needsRepaint = new boolean[width][height];
 		for(int x = 0; x < width; x ++)
 			for(int y = 0; y < height; y ++)
 				grid[x][y] = new Tile();
@@ -40,26 +45,14 @@ public class Display extends Frame {
 		setLocationRelativeTo(null);
 		addWindowListener(new WindowAdapter() {
 			@Override
-			public void windowActivated(WindowEvent e) {
-				System.out.println("windowActivated");
-			}
-			@Override
 			public void windowClosing(WindowEvent e) {
 				System.exit(0);
 			}
-			@Override
-			public void windowGainedFocus(WindowEvent e) {
-				System.out.println("windowGainedFocus");
-			}
-			@Override
-			public void windowOpened(WindowEvent e) {
-				System.out.println("windowOpened");
-			}
-			@Override
-			public void windowStateChanged(WindowEvent e) {
-				System.out.println("windowStateChanged");
-			}
 		});
+	}
+	
+	public void add(Highlight highlight) {
+		highlightSet.add(highlight);
 	}
 	
 	public Point gridCoordinatesOf(int pixelX, int pixelY) {
@@ -90,6 +83,7 @@ public class Display extends Frame {
 		Insets insets = getInsets();
 		g.translate(insets.left, insets.top);
 		paintGrid(g);
+		paintHighlights(g);
 	}
 	
 	private void paintGrid(Graphics2D g) {
@@ -99,7 +93,8 @@ public class Display extends Frame {
 			g.translate(tileSize, 0);
 			for(int y = 0; y < grid[x].length; y ++) {
 				g.translate(0, tileSize);
-				paintTile(grid[x][y], g);
+				if(needsRepaint[x][y])
+					paintTile(grid[x][y], g);
 			}
 			g.translate(0, -tileSize*grid[x].length);
 		}
@@ -107,13 +102,26 @@ public class Display extends Frame {
 		g.translate(tileHalfSize, tileHalfSize);
 	}
 	
+	private void paintHighlight(Highlight highlight, Graphics2D g) {
+		g.setColor(highlight.col);
+		g.drawRect(highlight.x*tileSize, highlight.y*tileSize, tileSize - 1, tileSize - 1);
+	}
+	
+	private void paintHighlights(Graphics2D g) {
+		for(Highlight highlight : highlightSet)
+			paintHighlight(highlight, g);
+		paintHighlight(hoverHighlight, g);
+	}
+	
 	private void paintTile(Tile tile, Graphics2D g) {
 		g.setColor(tile.bgCol);
 		g.fillRect(-tileHalfSize, -tileHalfSize, tileSize, tileSize);
 		g.setColor(tile.fgCol);
-		if(drawDebugWireframe)
-			g.drawRect(-tileHalfSize, -tileHalfSize, tileSize, tileSize);
 		Util.drawStringCenteredXY(String.valueOf(tile.character), 0, 0, g);
+	}
+	
+	public void remove(Highlight highlight) {
+		highlightSet.remove(highlight);
 	}
 	
 	private void resetSize() {
@@ -124,6 +132,7 @@ public class Display extends Frame {
 	public void set(int x, int y, char character, Color bgCol, Color fgCol) {
 		if(x < 0 || y < 0 || x >= grid.length || y >= grid[x].length) return;
 		grid[x][y].set(character, bgCol, fgCol);
+		needsRepaint[x][y] = true;
 	}
 	
 	public void set(int x, int y, char character) {
@@ -146,6 +155,16 @@ public class Display extends Frame {
 	
 	public void set(int x, int y, String string, boolean horizontal) {
 		set(x, y, string, Tile.defaultBgCol, Tile.defaultFgCol, horizontal);
+	}
+	
+	public void setHoverHighlight(int x, int y) {
+		hoverHighlight.x = x;
+		hoverHighlight.y = y;
+	}
+	
+	public void setHoverHighlight(int x, int y, Color col) {
+		setHoverHighlight(x, y);
+		hoverHighlight.col = col;
 	}
 	
 	@Override

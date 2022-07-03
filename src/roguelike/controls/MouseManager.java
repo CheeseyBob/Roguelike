@@ -3,11 +3,12 @@ package roguelike.controls;
 import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import roguelike.display.Display;
 
 
-class MouseManager implements MouseListener {
+class MouseManager implements MouseListener, MouseMotionListener {
 	
 	ControlManager controlManager;
 	
@@ -31,19 +32,28 @@ class MouseManager implements MouseListener {
 	}
 
 	@Override
+	public void mouseDragged(MouseEvent e) {
+		// Not used.
+	}
+
+	@Override
 	public void mouseEntered(MouseEvent e) {
-		System.out.println("--- mouseEntered ---");
-		
-		// TODO - Activate mouse tracker.
-		
+		// Not used.
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-		System.out.println("--- mouseExited ---");
-		
-		// TODO - Deactivate mouse tracker.
-		
+		// Not used.
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		Point position = new Point(e.getX(), e.getY());
+		if(e.getSource() instanceof Display) {
+			Display display = (Display) e.getSource();
+			position = display.gridCoordinatesOf(position);
+			controlManager.handleMouseMoved(position);
+		}
 	}
 
 	@Override
