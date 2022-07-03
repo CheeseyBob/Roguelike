@@ -1,0 +1,23 @@
+~~~ Overview ~~~
+
+A roguelike for the purpose of learning Japanese, with kanji tiles and Japanese text.
+The core engine and the game itself will be developed in a compartmentalised way, so that the core engine can be reused in future projects.
+
+
+~~~ To-Do ~~~
+
+> Mouse controls
+-> Add onClick to entities
+--> Open a pop-up with an image of the entity (e.g. '猫' -> photo of a cat).
+-> Add onHover to entities
+--> Show furigana somewhere in the UI when hovering over a kanji entity.
+--> Have terrain tiles display kanji only when hovered (e.g. '.' -> '草' for grass).
+
+> UI layer
+
+> Add main menu scene
+
+> Consider the actual game mechanics
+-> Exploration
+--> Add ability to move player to different zones.
+-> Add UI system for dialog/exposition.
