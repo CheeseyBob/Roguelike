@@ -8,6 +8,7 @@ import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -22,16 +23,17 @@ public class Display extends Frame {
 	private Font font;
 	private boolean drawDebugWireframe = false;
 
-	public Display(String title, int width, int height, int tileSize) {
+	public Display(String title, int width, int height, int tileSize, Font font) {
 		this.tileSize = tileSize;
 		this.tileHalfSize = tileSize/2;
-		this.font = new Font("Arial", Font.PLAIN, tileSize);
+		this.font = font;
 		this.grid = new Tile[width][height];
 		for(int x = 0; x < width; x ++)
 			for(int y = 0; y < height; y ++)
 				grid[x][y] = new Tile();
 		
 		setTitle(title);
+		setLayout(null);
 		setResizable(false);
 		resetSize();
 		setVisible(false);
@@ -58,6 +60,18 @@ public class Display extends Frame {
 				System.out.println("windowStateChanged");
 			}
 		});
+	}
+	
+	public Point gridCoordinatesOf(int screenX, int screenY) {
+		Point gridCoords = new Point();
+		Insets insets = getInsets();
+		gridCoords.x = (screenX - insets.left) / tileSize;
+		gridCoords.y = (screenY - insets.top) / tileSize;
+		return gridCoords;
+	}
+	
+	public Point gridCoordinatesOf(Point screenCoordinates) {
+		return gridCoordinatesOf(screenCoordinates.x, screenCoordinates.y);
 	}
 	
 	public int gridHeight() {
@@ -118,6 +132,20 @@ public class Display extends Frame {
 	
 	public void set(int x, int y, Tile tile) {
 		set(x, y, tile.character, tile.bgCol, tile.fgCol);
+	}
+	
+	public void set(int x, int y, String string, Color bgCol, Color fgCol, boolean horizontal) {
+		int dx = horizontal ? 1 : 0;
+		int dy = horizontal ? 0 : 1;
+		for(char character : string.toCharArray()) {
+			set(x, y, character, bgCol, fgCol);
+			x += dx;
+			y += dy;
+		}
+	}
+	
+	public void set(int x, int y, String string, boolean horizontal) {
+		set(x, y, string, Tile.defaultBgCol, Tile.defaultFgCol, horizontal);
 	}
 	
 	@Override

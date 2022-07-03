@@ -5,11 +5,11 @@ import java.awt.Color;
 import roguelike.LocatableTile;
 
 
-public class Entity extends LocatableTile {
+public class InterfaceComponent extends LocatableTile {
 	Scene scene;
 	int drawLayer;
 	
-	public Entity(char character, Color bgCol, Color fgCol, int drawLayer) {
+	public InterfaceComponent(char character, Color bgCol, Color fgCol, int drawLayer) {
 		super(character, bgCol, fgCol);
 		this.drawLayer = drawLayer;
 	}
