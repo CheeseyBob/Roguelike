@@ -1,4 +1,5 @@
 import java.awt.Color;
+import java.awt.Point;
 
 import roguelike.Actor;
 import roguelike.controls.MouseControl;
@@ -12,10 +13,10 @@ import roguelike.ui.ToggleButton;
 class GameScene extends Scene {
 	Actor player = new Actor('私', Color.BLACK, Color.WHITE);
 	
-	InterfaceComponent decorationNW = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY, 0);
-	InterfaceComponent decorationNE = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY, 0);
-	InterfaceComponent decorationSW = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY, 0);
-	InterfaceComponent decorationSE = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY, 0);
+	InterfaceComponent decorationNW = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
+	InterfaceComponent decorationNE = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
+	InterfaceComponent decorationSW = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
+	InterfaceComponent decorationSE = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
 
 	FunctionalButton testButtonA = new FunctionalButton('A', Color.DARK_GRAY, Color.WHITE, this::testButtonA);
 	ToggleButton testButtonB = new ToggleButton(this::testButtonB)
@@ -26,9 +27,6 @@ class GameScene extends Scene {
 			.whenOff('X', Color.DARK_GRAY, Color.LIGHT_GRAY)
 			.whenOn('C', Color.LIGHT_GRAY, Color.WHITE)
 			.setOn(true);
-	boolean testToggleB = false;
-	
-	int testVarA = 7, testVarB = 2, testVarC = 5;
 	
 	GameScene() {
 		addControl('1', this::moveSW);
@@ -74,10 +72,14 @@ class GameScene extends Scene {
 	}
 	
 	private boolean click(int x, int y) {
-		System.out.println("GameSceme.click("+x+", "+y+")");
+		System.out.println("GameScene.click("+x+", "+y+")");
 		
 		
-		place(new InterfaceComponent('o', Color.BLACK, Color.DARK_GRAY, 0), x, y);
+		//place(new InterfaceComponent('o', Color.BLACK, Color.DARK_GRAY, 0), x, y);
+		
+		Point mapCoords = mapCoordinatesOf(x, y);
+		System.out.println("mapCoords="+mapCoords);
+		place(new Actor('x', Color.BLACK, Color.RED), mapCoords.x, mapCoords.y);
 		
 		paint();
 		return true;
@@ -91,13 +93,6 @@ class GameScene extends Scene {
 	
 	private void paintUI(Display display) {
 		display.set(2, 0, "命:7|力:2|金:5", Color.BLACK, Color.GREEN, true);
-		
-		/*
-		Color bgColA = testButtonA ? Color.blue : Color.BLACK;
-		display.set(0, 2, 'A', bgColA, Color.WHITE);
-		Color bgColB = testButtonB ? Color.blue : Color.BLACK;
-		display.set(0, 4, 'B', bgColB, Color.WHITE);
-		*/
 	}
 	
 	private boolean move(int dx, int dy) {

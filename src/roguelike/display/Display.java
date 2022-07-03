@@ -62,11 +62,11 @@ public class Display extends Frame {
 		});
 	}
 	
-	public Point gridCoordinatesOf(int screenX, int screenY) {
+	public Point gridCoordinatesOf(int pixelX, int pixelY) {
 		Point gridCoords = new Point();
 		Insets insets = getInsets();
-		gridCoords.x = (screenX - insets.left) / tileSize;
-		gridCoords.y = (screenY - insets.top) / tileSize;
+		gridCoords.x = (pixelX - insets.left) / tileSize;
+		gridCoords.y = (pixelY - insets.top) / tileSize;
 		return gridCoords;
 	}
 	

@@ -1,5 +1,6 @@
 package roguelike.scene;
 
+import java.awt.Point;
 import java.util.*;
 
 import roguelike.controls.*;
@@ -11,13 +12,14 @@ import roguelike.ui.RightClickAction;
 public class Scene {
 	
 	public int viewX = 0, viewY = 0;
-	
-	private ControlManager controlManager = new ControlManager();
+
 	private Optional<Display> connectedDisplay = Optional.empty();
-	private DrawLayers drawLayers = new DrawLayers();
-	private EntityMap entityMap = new EntityMap();
-	private Set<InterfaceComponent> interfaceComponents = new HashSet<InterfaceComponent>();
-	private Set<Stepable> stepables = new HashSet<Stepable>();
+	
+	private final ControlManager controlManager = new ControlManager();
+	private final DrawLayers drawLayers = new DrawLayers();
+	private final EntityMap entityMap = new EntityMap();
+	private final Set<InterfaceComponent> interfaceComponents = new HashSet<InterfaceComponent>();
+	private final Set<Stepable> stepables = new HashSet<Stepable>();
 	
 	public Scene() {
 		addControl(MouseControl.LEFT_BUTTON, this::clickLeftMouse);
@@ -45,6 +47,12 @@ public class Scene {
 			if(component instanceof LeftClickAction && component.isAt(x, y))
 				if( ((LeftClickAction) component).leftClick() )
 					return true;
+		
+		for(Entity entity : entityMap.get(mapCoordinatesOf(x, y)))
+			if(entity instanceof LeftClickAction)
+				if( ((LeftClickAction) entity).leftClick() )
+					return true;
+
 		return false;
 	}
 	
@@ -53,6 +61,12 @@ public class Scene {
 			if(component instanceof RightClickAction && component.isAt(x, y))
 				if( ((RightClickAction) component).rightClick() )
 					return true;
+		
+		for(Entity entity : entityMap.get(mapCoordinatesOf(x, y)))
+			if(entity instanceof RightClickAction)
+				if( ((RightClickAction) entity).rightClick() )
+					return true;
+		
 		return false;
 	}
 	
@@ -70,6 +84,17 @@ public class Scene {
 	
 	public Display getDisplay() {
 		return connectedDisplay.get();
+	}
+	
+	public Point mapCoordinatesOf(int displayX, int displayY) {
+		Point mapCoords = new Point();
+		mapCoords.x = displayX + viewX - getDisplay().gridWidth()/2;
+		mapCoords.y = displayY + viewY - getDisplay().gridHeight()/2;
+		return mapCoords;
+	}
+	
+	public Point mapCoordinatesOf(Point displayCoordinates) {
+		return mapCoordinatesOf(displayCoordinates.x, displayCoordinates.y);
 	}
 	
 	public void paint() {
@@ -95,8 +120,9 @@ public class Scene {
 	private void place(Entity entity) {
 		if(entity.scene != null)
 			throw new IllegalArgumentException("Cannot add "+entity+" to "+this+" as it already belongs to scene "+entity.scene);
-		
+
 		entity.scene = this;
+		entity.map = entityMap;
 		drawLayers.add(entity);
 		entityMap.add(entity);
 	}
@@ -133,6 +159,7 @@ public class Scene {
 			throw new IllegalArgumentException("Cannot remove "+entity+" from "+this+" as it belongs to scene "+entity.scene);
 		
 		entity.scene = null;
+		entity.map = null;
 		drawLayers.remove(entity);
 		entityMap.remove(entity);
 	}

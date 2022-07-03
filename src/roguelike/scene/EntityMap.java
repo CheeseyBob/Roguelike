@@ -20,11 +20,21 @@ class EntityMap {
 		mapLocation.add(entity);
 	}
 	
+	Set<Entity> get(Point location) {
+		Set<Entity> entitySet = map.get(location);
+		return entitySet == null ? new HashSet<Entity>() : entitySet;
+	}
+	
 	void remove(Entity entity) {
 		Point location = entity.getLocation();
 		Set<Entity> mapLocation = map.get(location);
 		mapLocation.remove(entity);
 		if(mapLocation.isEmpty())
 			map.remove(location);
+	}
+	
+	@Override
+	public String toString() {
+		return map.toString();
 	}
 }

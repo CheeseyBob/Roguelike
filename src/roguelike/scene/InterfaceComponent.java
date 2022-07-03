@@ -13,4 +13,8 @@ public class InterfaceComponent extends LocatableTile {
 		super(character, bgCol, fgCol);
 		this.drawLayer = drawLayer;
 	}
+	
+	public InterfaceComponent(char character, Color bgCol, Color fgCol) {
+		this(character, bgCol, fgCol, 0);
+	}
 }
