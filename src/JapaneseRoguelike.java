@@ -10,7 +10,10 @@ class JapaneseRoguelike {
 	public static Scene gameScene = new GameScene();
 	
 	public static void main(String[] args) {
-		Font font = new Font("Arial", Font.PLAIN, 32);
+		//String[] fontList = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+		
+		Font font = new Font("Monospaced", Font.PLAIN, 32);
+		
 		display = new Display("Japanese Roguelike", 15, 15, 32, font);
 		display.setVisible(true);
 		

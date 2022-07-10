@@ -11,11 +11,16 @@ import roguelike.ui.ToggleButton;
 
 
 class GameScene extends Scene {
-	Actor player = new Actor('私', Color.BLACK, Color.WHITE);
+	ToggleButton furiganaToggle = new ToggleButton(this::toggleFurigana)
+			.whenOff('あ', Color.DARK_GRAY, Color.GRAY)
+			.whenOn('あ', Color.DARK_GRAY, Color.WHITE)
+			.setOn(true);
+	String furigana = "test";
+	
+	Creature player = new Creature('私', "わたし", Color.WHITE);
 	
 	InterfaceComponent decorationNW = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
 	InterfaceComponent decorationNE = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
-	InterfaceComponent decorationSW = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
 	InterfaceComponent decorationSE = new InterfaceComponent('#', Color.BLACK, Color.DARK_GRAY);
 
 	FunctionalButton testButtonA = new FunctionalButton('A', Color.DARK_GRAY, Color.WHITE, this::testButtonA);
@@ -38,19 +43,27 @@ class GameScene extends Scene {
 		addControl('7', this::moveNW);
 		addControl('8', this::moveN);
 		addControl('9', this::moveNE);
+		addControl('f', furiganaToggle::leftClick);
 		addControl(MouseControl.RIGHT_BUTTON, this::click);
 		
+		// UI //
 		place(decorationNW);
 		place(decorationNE);
-		place(decorationSW);
 		place(decorationSE);
 		place(testButtonA);
 		place(testButtonB);
 		place(testButtonC);
+		
+		place(furiganaToggle);
 
+		// Map //
 		for(int x = 0; x < 10; x ++)
 			for(int y = 0; y < 10; y ++)
 				place(new Grass(), x, y);
+		
+		for(int x = 0; x < 10; x ++)
+			place(new Wall(), x, 10);
+		
 		place(player, 5, 5);
 		place(new Cat(), 2, 2);
 		place(new Cat(), 7, 7);
@@ -63,19 +76,17 @@ class GameScene extends Scene {
 		int N = 0, S = display.gridHeight() - 1, E = display.gridWidth() - 1, W = 0;
 		decorationNW.setLocation(W, N);
 		decorationNE.setLocation(E, N);
-		decorationSW.setLocation(W, S);
 		decorationSE.setLocation(E, S);
 		
 		testButtonA.setLocation(W, N + 2);
 		testButtonB.setLocation(W, S - 3);
 		testButtonC.setLocation(W, S - 2);
+		
+		furiganaToggle.setLocation(W, S);
 	}
 	
 	private boolean click(int x, int y) {
 		System.out.println("GameScene.click("+x+", "+y+")");
-		
-		
-		//place(new InterfaceComponent('o', Color.BLACK, Color.DARK_GRAY, 0), x, y);
 		
 		Point mapCoords = mapCoordinatesOf(x, y);
 		System.out.println("mapCoords="+mapCoords);
@@ -92,12 +103,20 @@ class GameScene extends Scene {
 	}
 	
 	private void paintUI(Display display) {
+		int N = 0, S = display.gridHeight() - 1, E = display.gridWidth() - 1, W = 0;
+		
 		display.set(2, 0, "命:7|力:2|金:5", Color.BLACK, Color.GREEN, true);
+
+		if(furiganaToggle.isOn()) {
+			display.set(W+1, S, ":"+furigana, Color.BLACK, Color.WHITE, true);
+		} else {
+			display.set(W+1, S, ":........", Color.BLACK, Color.DARK_GRAY, true);
+		}
 	}
 	
 	private boolean move(int dx, int dy) {
-		player.move(dx, dy);
-		step();
+		if(player.move(dx, dy))
+			step();
 		return true;
 	}
 	
@@ -118,7 +137,8 @@ class GameScene extends Scene {
 	}
 	
 	private boolean moveX() {
-		return move(+0, +0);
+		step();
+		return true;
 	}
 	
 	private boolean moveE() {
@@ -164,6 +184,11 @@ class GameScene extends Scene {
 		
 		System.out.println("GameScene.testButtonA(): "+toggle.isOn());
 		
+		paint();
+		return true;
+	}
+	
+	private boolean toggleFurigana(InterfaceComponent sourceComponent) {
 		paint();
 		return true;
 	}

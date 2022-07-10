@@ -2,14 +2,13 @@ import java.awt.Color;
 
 import maths.M;
 
-import roguelike.Actor;
 import roguelike.ui.LeftClickAction;
 
 
-class Cat extends Actor implements LeftClickAction {
+class Cat extends Creature implements LeftClickAction {
 
 	public Cat() {
-		super('猫', Color.BLACK, Color.WHITE);
+		super('猫', "ねこ", Color.WHITE);
 	}
 	
 	@Override

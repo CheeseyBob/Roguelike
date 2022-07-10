@@ -11,7 +11,7 @@ The core engine and the game itself will be developed in a compartmentalised way
 
 > Multi-tile entities and UI components using child objects.
 
-> Movement-blocking terrain.
+> Movement-blocking terrain (abstract from game implementation).
 
 > Activate controls in priority order.
 

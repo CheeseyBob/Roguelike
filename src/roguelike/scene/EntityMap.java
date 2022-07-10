@@ -7,10 +7,10 @@ import java.util.Map;
 import java.util.Set;
 
 
-class EntityMap {
+public class EntityMap {
 	private Map<Point, Set<Entity>> map = new HashMap<Point, Set<Entity>>();
 	
-	void add(Entity entity) {
+	public void add(Entity entity) {
 		Point location = entity.getLocation();
 		Set<Entity> mapLocation = map.get(location);
 		if(mapLocation == null) {
@@ -20,12 +20,16 @@ class EntityMap {
 		mapLocation.add(entity);
 	}
 	
-	Set<Entity> get(Point location) {
+	public Set<Entity> get(Point location) {
 		Set<Entity> entitySet = map.get(location);
 		return entitySet == null ? new HashSet<Entity>() : entitySet;
 	}
 	
-	void remove(Entity entity) {
+	public Set<Entity> get(int x, int y) {
+		return get(new Point(x, y));
+	}
+	
+	public void remove(Entity entity) {
 		Point location = entity.getLocation();
 		Set<Entity> mapLocation = map.get(location);
 		mapLocation.remove(entity);

@@ -13,6 +13,14 @@ public class Actor extends Entity implements Stepable {
 		super(character, bgCol, fgCol, DRAW_LAYER);
 	}
 	
+	/**
+	 * @return whether the movement was carried out successfully.
+	 */
+	public boolean move(int dx, int dy) {
+		setLocation(getX() + dx, getY() + dy);
+		return true;
+	}
+	
 	@Override
 	public void step() {
 		// To be overridden by subclasses.
