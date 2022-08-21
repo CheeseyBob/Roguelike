@@ -1,6 +1,9 @@
+package japaneseRoguelike;
+
 import java.awt.Color;
 import java.awt.Point;
 
+import japaneseRoguelike.creatures.*;
 import roguelike.Actor;
 import roguelike.controls.MouseControl;
 import roguelike.display.Display;
@@ -10,12 +13,12 @@ import roguelike.ui.FunctionalButton;
 import roguelike.ui.ToggleButton;
 
 
-class GameScene extends Scene {
+public class GameScene extends Scene {
 	ToggleButton furiganaToggle = new ToggleButton(this::toggleFurigana)
 			.whenOff('あ', Color.DARK_GRAY, Color.GRAY)
 			.whenOn('あ', Color.DARK_GRAY, Color.WHITE)
 			.setOn(true);
-	String furigana = "test";
+	private String furigana = "test";
 	
 	Creature player = new Creature('私', "わたし", Color.WHITE);
 	
@@ -65,8 +68,14 @@ class GameScene extends Scene {
 			place(new Wall(), x, 10);
 		
 		place(player, 5, 5);
-		place(new Cat(), 2, 2);
-		place(new Cat(), 7, 7);
+		
+		place(new 猫(), 6, 7);
+		place(new 猫(), 7, 7);
+		
+		place(new 兄(), 3, 2);
+		place(new 弟(), 4, 2);
+		place(new 姉(), 5, 2);
+		place(new 妹(), 6, 2);
 	}
 	
 	@Override
@@ -103,7 +112,10 @@ class GameScene extends Scene {
 	}
 	
 	private void paintUI(Display display) {
-		int N = 0, S = display.gridHeight() - 1, E = display.gridWidth() - 1, W = 0;
+		//int N = 0;
+		int S = display.gridHeight() - 1;
+		//int E = display.gridWidth() - 1;
+		int W = 0;
 		
 		display.set(2, 0, "命:7|力:2|金:5", Color.BLACK, Color.GREEN, true);
 
@@ -155,6 +167,10 @@ class GameScene extends Scene {
 	
 	private boolean moveNE() {
 		return move(+1, -1);
+	}
+	
+	public void setFurigana(String furigana) {
+		this.furigana = furigana;
 	}
 	
 	@Override

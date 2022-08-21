@@ -1,3 +1,4 @@
+package japaneseRoguelike;
 import roguelike.Actor;
 
 

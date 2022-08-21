@@ -1,11 +1,15 @@
+package japaneseRoguelike.creatures;
+
 import java.awt.Color;
 
+import japaneseRoguelike.GameScene;
+import japaneseRoguelike.MovementBlocker;
 import roguelike.Actor;
 import roguelike.scene.Entity;
 import roguelike.ui.HoverAction;
 
 
-class Creature extends Actor implements HoverAction, MovementBlocker {
+public class Creature extends Actor implements HoverAction, MovementBlocker {
 	
 	private String furigana;
 
@@ -28,7 +32,7 @@ class Creature extends Actor implements HoverAction, MovementBlocker {
 
 	@Override
 	public boolean hover() {
-		((GameScene)scene).furigana = furigana;
+		((GameScene)scene).setFurigana(furigana);
 		scene.paint();
 		return false;
 	}
@@ -42,7 +46,7 @@ class Creature extends Actor implements HoverAction, MovementBlocker {
 
 	@Override
 	public void unhover() {
-		((GameScene)scene).furigana = "";
+		((GameScene)scene).setFurigana("");
 		scene.paint();
 	}
 }

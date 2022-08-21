@@ -1,3 +1,5 @@
+package japaneseRoguelike.creatures;
+
 import java.awt.Color;
 
 import maths.M;
@@ -5,9 +7,9 @@ import maths.M;
 import roguelike.ui.LeftClickAction;
 
 
-class Cat extends Creature implements LeftClickAction {
+public class 猫 extends Creature implements LeftClickAction {
 
-	public Cat() {
+	public 猫() {
 		super('猫', "ねこ", Color.WHITE);
 	}
 	

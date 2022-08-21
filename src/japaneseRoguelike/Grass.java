@@ -1,3 +1,4 @@
+package japaneseRoguelike;
 import java.awt.Color;
 
 

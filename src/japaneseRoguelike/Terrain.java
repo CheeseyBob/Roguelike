@@ -1,3 +1,5 @@
+package japaneseRoguelike;
+
 import java.awt.Color;
 
 import roguelike.Actor;
@@ -32,7 +34,7 @@ public class Terrain extends Entity implements HoverAction, MovementBlocker {
 	@Override
 	public boolean hover() {
 		character = hoverCharacter;
-		((GameScene)scene).furigana = furigana;
+		((GameScene)scene).setFurigana(furigana);
 		scene.paint();
 		return false;
 	}
@@ -40,7 +42,7 @@ public class Terrain extends Entity implements HoverAction, MovementBlocker {
 	@Override
 	public void unhover() {
 		character = defaultCharacter;
-		((GameScene)scene).furigana = "";
+		((GameScene)scene).setFurigana("");
 		scene.paint();
 	}
 }

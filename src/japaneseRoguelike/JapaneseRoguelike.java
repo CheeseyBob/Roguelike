@@ -1,3 +1,4 @@
+package japaneseRoguelike;
 import java.awt.Font;
 
 import roguelike.display.Display;
